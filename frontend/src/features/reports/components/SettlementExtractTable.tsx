@@ -1,11 +1,19 @@
-import { Badge } from '../../../components/ui/Badge'
-import { EmptyState } from '../../../components/ui/EmptyState'
-import { Table } from '../../../components/ui/Table'
-import { formatCurrencyValue, formatDateTime, formatDecimal } from '../../../lib/formatters'
-import type { SettlementExtractItem } from '../../../types/api'
+import { Badge } from "../../../components/ui/Badge";
+import { EmptyState } from "../../../components/ui/EmptyState";
+import { Table } from "../../../components/ui/Table";
+import {
+  formatCurrencyValue,
+  formatDateTime,
+  formatDecimal,
+} from "../../../lib/formatters";
+import type { SettlementExtractItem } from "../../../types/api";
 
-export const SettlementExtractTable = ({ items }: { items: SettlementExtractItem[] }) => {
-  if (!items.length) return <EmptyState text="Nenhum lançamento encontrado." />
+export const SettlementExtractTable = ({
+  items,
+}: {
+  items: SettlementExtractItem[];
+}) => {
+  if (!items.length) return <EmptyState text="Nenhum lançamento encontrado." />;
 
   return (
     <Table>
@@ -33,20 +41,43 @@ export const SettlementExtractTable = ({ items }: { items: SettlementExtractItem
             <td className="px-3 py-2">{item.batchId}</td>
             <td className="px-3 py-2">{item.receivableId}</td>
             <td className="px-3 py-2">{formatDateTime(item.createdAt)}</td>
-            <td className="px-3 py-2">{item.assignorName}</td>
-            <td className="px-3 py-2">{item.assignorDocument}</td>
+            <td className="px-3 py-2">{item.assignor.name}</td>
+            <td className="px-3 py-2">{item.assignor.document}</td>
             <td className="px-3 py-2">{item.receivableType}</td>
-            <td className="px-3 py-2"><Badge label={item.batchStatus} /></td>
-            <td className="px-3 py-2"><Badge label={item.receivableStatus} /></td>
-            <td className="px-3 py-2">{formatCurrencyValue(item.faceValue, item.faceCurrencyCode)}</td>
-            <td className="px-3 py-2">{formatCurrencyValue(item.presentValue, item.faceCurrencyCode)}</td>
-            <td className="px-3 py-2">{formatCurrencyValue(item.convertedPresentValue, item.paymentCurrencyCode)}</td>
-            <td className="px-3 py-2">{item.faceCurrencyCode}</td>
-            <td className="px-3 py-2">{item.paymentCurrencyCode}</td>
-            <td className="px-3 py-2">{item.exchangeRate ? formatDecimal(item.exchangeRate) : '-'}</td>
+            <td className="px-3 py-2">
+              <Badge label={item.status.batch} />
+            </td>
+            <td className="px-3 py-2">
+              <Badge label={item.status.receivable} />
+            </td>
+            <td className="px-3 py-2">
+              {formatCurrencyValue(
+                item.values.faceValue,
+                item.faceCurrencyCode,
+              )}
+            </td>
+            <td className="px-3 py-2">
+              {formatCurrencyValue(
+                item.values.presentValue,
+                item.faceCurrencyCode,
+              )}
+            </td>
+            <td className="px-3 py-2">
+              {formatCurrencyValue(
+                item.values.convertedPresentValue,
+                item.paymentCurrencyCode,
+              )}
+            </td>
+            <td className="px-3 py-2">{item.currencies.faceCurrency}</td>
+            <td className="px-3 py-2">{item.currencies.paymentCurrency}</td>
+            <td className="px-3 py-2">
+              {item.exchangeRate.rate
+                ? formatDecimal(item.exchangeRate.rate)
+                : "-"}
+            </td>
           </tr>
         ))}
       </tbody>
     </Table>
-  )
-}
+  );
+};
